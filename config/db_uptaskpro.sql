@@ -18,12 +18,14 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `db_plantillamvc`
+-- Base de datos: `db_uptaskpro`
 --
-CREATE DATABASE db_plantillamvc
+DROP DATABASE IF EXISTS db_uptaskpro;
+CREATE DATABASE db_uptaskpro
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_spanish2_ci;
-USE db_plantillamvc;
+USE db_uptaskpro;
+
 -- --------------------------------------------------------
 
 --
@@ -32,7 +34,7 @@ USE db_plantillamvc;
 
 CREATE TABLE `categorias` (
   `id` int(11) NOT NULL,
-  `nombre` VARCHAR(60) NOT NULL,
+  `nombre` VARCHAR(100) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -43,7 +45,10 @@ CREATE TABLE `categorias` (
 INSERT INTO `categorias` (`id`, `nombre`, `fecha`) VALUES
 (1, 'Abarrote', '2024-06-09 18:57:07'),
 (2, 'Sin Asignar', '2024-06-09 18:57:16'),
-(3, 'Garantia', '2024-06-09 16:54:18');
+(3, 'Cliente', '2024-06-09 16:54:18'),
+(4, 'Empleado', '2024-06-09 16:54:18'),
+(5, 'Proveedor', '2024-06-09 16:54:18'),
+(6, 'Familiar', '2024-06-09 16:54:18');
 
 -- --------------------------------------------------------
 
@@ -54,7 +59,7 @@ INSERT INTO `categorias` (`id`, `nombre`, `fecha`) VALUES
 CREATE TABLE `entradap` (
   `id` int(11) NOT NULL,
   `codigo` int(11) NOT NULL,
-  `descripcion` text NOT NULL,
+  `descripcion` varchar(100) NOT NULL,
   `nombrecategoria` int(11) NOT NULL,
   `entrada` int(11) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -68,7 +73,7 @@ INSERT INTO `entradap` (`id`, `codigo`, `descripcion`, `nombrecategoria`, `entra
 (1, 201, 'ProdOne', 1, 12, '2024-06-14 15:25:15'),
 (2, 201, 'ProdOne', 1, 10, '2024-06-14 15:51:25'),
 (3, 201, 'ProdOne', 1, 10, '2024-06-14 16:02:18'),
-(4, 76676878, 'ProdFour', 2, 15, '2024-06-14 16:04:23'),
+(4, 201, 'ProdFour', 2, 15, '2024-06-14 16:04:23'),
 (5, 201, 'ProdOne', 1, 10, '2024-06-17 01:42:46'),
 (6, 201, 'ProdOne', 1, 10, '2024-07-08 16:55:33');
 
@@ -81,8 +86,8 @@ INSERT INTO `entradap` (`id`, `codigo`, `descripcion`, `nombrecategoria`, `entra
 CREATE TABLE `productos` (
   `id` int(11) NOT NULL,
   `idcategoria` int(11) NOT NULL,
-  `codigo` text NOT NULL,
-  `descripcion` text NOT NULL,
+  `codigo` varchar(100) NOT NULL,
+  `descripcion` varchar(255) NOT NULL,
   `stock` int(11) NOT NULL,
   `precio` float NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -93,8 +98,8 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id`, `idcategoria`, `codigo`, `descripcion`, `stock`, `precio`, `fecha`) VALUES
-(1, 1, '201', 'ProdOne', 50, 100,6'2024-07-08 16:55:33'),
-(2, 2, '76676878', 'ProdFour', 20,108,6'2024-07-08 16:55:55');
+(1, 1, '201', 'ProdOne', 50, 100.6,'2024-07-08 16:55:33'),
+(2, 2, '76676878', 'ProdFour', 20,108.6,'2024-07-08 16:55:55');
 
 -- --------------------------------------------------------
 
@@ -104,9 +109,9 @@ INSERT INTO `productos` (`id`, `idcategoria`, `codigo`, `descripcion`, `stock`, 
 
 CREATE TABLE `salidap` (
   `id` int(11) NOT NULL,
-  `codigo` text NOT NULL,
-  `descripcion` text NOT NULL,
-  `nombrecategoria` text NOT NULL,
+  `codigo` varchar(100) NOT NULL,
+  `descripcion` varchar(255) NOT NULL,
+  `nombrecategoria` int(11) NOT NULL,
   `salida` int(11) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -116,9 +121,9 @@ CREATE TABLE `salidap` (
 --
 
 INSERT INTO `salidap` (`id`, `codigo`, `descripcion`, `nombrecategoria`, `salida`, `fecha`) VALUES
-(1, '76676878', 'ProdFour', '2'105,6'2024-06-14 16:23:20'),
-(2, '76676878', 'ProdFour', '2',100,6'2024-06-17 01:43:02'),
-(3, '76676878', 'ProdFour', '2',100,6'2024-07-08 16:55:55');
+(1, '76676878', 'ProdFour', '2',105.6,'2024-06-14 16:23:20'),
+(2, '76676878', 'ProdFour', '2',100.6,'2024-06-17 01:43:02'),
+(3, '76676878', 'ProdFour', '2',100.6,'2024-07-08 16:55:55');
 
 -- --------------------------------------------------------
 
@@ -128,10 +133,10 @@ INSERT INTO `salidap` (`id`, `codigo`, `descripcion`, `nombrecategoria`, `salida
 
 CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL,
-  `nombre` text NOT NULL,
-  `usuario` text NOT NULL,
+  `nombre` varchar(150) NOT NULL,
+  `usuario` varchar(60) NOT NULL,
   `password` varchar(300) NOT NULL,
-  `perfil` text NOT NULL,
+  `perfil` varchar(60) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -244,8 +249,40 @@ CREATE TABLE `clientes` (
 --
 
 INSERT INTO `clientes` (`id`, `nombre`, `direccion`, `telefono`, `email`, `transporte`, `fecha`, `estado`) VALUES
-(1, 'Consumidor Final', 'Anonima', '00000000', 'mail@mail.com', 'Sin Asignar', '2024-06-09 18:57:07', 1);
+(1, 'Consumidor Final', 'Anonima', '00000000', 'mail@mail.com', 'Sin Asignar', '2024-06-09 18:57:07', 1),
 (2, 'Juan Lezana', 'Buenos Aires, Argentina', '1166376200', 'juan@gmail.com', 'Sin Asignar', '2024-06-09 18:57:07', 1);
+
+--
+-- Estructura de tabla para proveedores
+--
+
+CREATE TABLE `proveedores` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(150) NOT NULL,
+  `direccion` varchar(150) NULL,
+  `telefono` varchar(25) NULL,
+  `email` varchar(60) NULL,
+  `pagina_web` varchar(150) NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `estado` bit DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `proveedores`
+--
+
+INSERT INTO `proveedores` (`id`, `nombre`, `direccion`, `telefono`, `email`, `pagina_web`, `fecha`, `estado`) VALUES
+(1, 'LezanaTech', 'Anonima', '00000000', 'mail@mail.com', 'www.lezanatech.com', '2024-06-09 18:57:07', 1);
+
+--
+-- Estructura tabla empleados
+--
+
+
+--
+-- Estructura tabla 
+--
+
 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
